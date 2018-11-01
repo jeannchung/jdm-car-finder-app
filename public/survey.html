@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Car Matcher</title>
+</head>
+
+<!-- Page Styling -->
+<link rel="stylesheet" href="assets/CSS/reset.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+  crossorigin="anonymous">
+<link rel="stylesheet" href="assets/CSS/styles.css">
+
+<body>
+  <div class="container">
+    <h1>Performance Vehicle Survey Questions</h1>
+    <hr>
+    <div class="container questions">
+      <div class="form-group question">
+        <label for="question1">
+          <h4>Question 1</h4>
+        </label>
+        <p>What is your price range?</p>
+        <select id="question1" class="form-control">
+          <option value="0">Select an option</option>
+          <option value="1">$30,000 - $34,999</option>
+          <option value="2">$35,000 - $39,999$</option>
+          <option value="3">$40,000 - $45,000</option>
+        </select>
+      </div>
+      <div class="form-group question">
+        <label for="question2">
+          <h4>Question 2</h4>
+        </label>
+        <p>How new do you need the car to be?</p>
+        <select id="question2" class="form-control">
+          <option value="0">Select an option</option>
+          <option value="1">New (Current year production)</option>
+          <option value="2">Fairly New (Produced within last year)</option>
+          <option value="3">Moderately New (Produced 2+ years ago)</option>
+        </select>
+      </div>
+      <div class="form-group question">
+        <label for="question3">
+          <h4>Question 3</h4>
+        </label>
+        <p>Do you prefer a domestic or imported vehicle?</p>
+        <select id="question3" class="form-control">
+          <option value="0">Select an option</option>
+          <option value="1">Domestic</option>
+          <option value="2">Imported</option>
+        </select>
+      </div>
+      <div class="form-group question">
+        <label for="question4">
+          <h4>Question 4</h4>
+        </label>
+        <p>What is your preferred body style?</p>
+        <select id="question4" class="form-control">
+          <option value="0">Select an option</option>
+          <option value="1">Standard/Moderate</option>
+          <option value="2">Aggressive</option>
+        </select>
+      </div>
+      <div class="form-group question">
+        <label for="question5">
+          <h4>Question 5</h4>
+        </label>
+        <p>What minimum fuel efficiency will you require out of the vehicle?</p>
+        <select id="question5" class="form-control">
+          <option value="0">Select an option</option>
+          <option value="1">15-19 mpg combined</option>
+          <option value="2">20-24 mpg combined</option>
+          <option value="3">25-29 mpg combined</option>
+        </select>
+      </div>
+      <div class="form-group question">
+        <label for="question6">
+          <h4>Question 6</h4>
+        </label>
+        <p>What is your desired transmission?</p>
+        <select id="question6" class="form-control">
+          <option value="0">Select an option</option>
+          <option value="1">Automatic</option>
+          <option value="2">Manual</option>
+        </select>
+      </div>
+      <div class="form-group question">
+        <label for="question7">
+          <h4>Question 7</h4>
+        </label>
+        <p>What is your desired drive train?</p>
+        <select id="question7" class="form-control">
+          <option value="0">Select an option</option>
+          <option value="1">Front Wheel Drive</option>
+          <option value="2">All Wheel Drive</option>
+        </select>
+      </div>
+
+      <!-- Button trigger modal -->
+      <button type="button" onclick="requestCar()" class="btn btn-primary" id="submitAnswers" data-toggle="modal"
+        data-target="#exampleModalCenter">
+        Find the car for you
+      </button>
+
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="carName">Car Here</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="carInfo">
+              <img id="carPhoto" style="height:300px; width:100%;" src="" alt="">
+              <ul id="vehicleInfo">
+                <li id="price">1</li>
+                <li id="age">1</li>
+                <li id="make">1</li>
+                <li id="body">1</li>
+                <li id="fuel">1</li>
+                <li id="trans">1</li>
+                <li id="drive">1</li>
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const requestCar = () => {
+      event.preventDefault()
+
+      let userInput = {
+        randNum: (Math.floor(Math.random() * 5)),
+        price: document.getElementById('question1').value,
+        age: document.getElementById('question2').value,
+        make: document.getElementById('question3').value,
+        body: document.getElementById('question4').value,
+        fuel: document.getElementById('question5').value,
+        trans: document.getElementById('question6').value,
+        drive: document.getElementById('question7').value
+      }
+
+      fetch('/car', {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify(userInput)
+      })
+        .then(r => { console.log(r.status) })
+        .catch(e => console.error(e))
+
+      fetch('/car')
+        .then(r => r.json())
+        .then(r => {
+          document.getElementById("carPhoto").src = r.img_url
+          document.querySelector('#carName').innerHTML = r.name
+          document.querySelector('#price').innerHTML = r.price
+          document.querySelector('#age').innerHTML = r.age
+          document.querySelector('#make').innerHTML = r.make
+          document.querySelector('#body').innerHTML = r.body
+          document.querySelector('#fuel').innerHTML = r.fuel
+          document.querySelector('#trans').innerHTML = r.trans
+          document.querySelector('#drive').innerHTML = r.drive
+        })
+        .catch(e => console.log(e))
+
+      $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+      })
+    }
+  </script>
+  <!-- BootStrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
