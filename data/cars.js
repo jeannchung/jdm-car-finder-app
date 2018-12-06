@@ -1,5 +1,5 @@
 // cars to match with here
-let carArray = [
+const carArray = [
   {
     id: 1,
     name: 'Subaru WRX STI',

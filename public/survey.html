@@ -9,16 +9,18 @@
 </head>
 
 <!-- Page Styling -->
-<link rel="stylesheet" href="assets/CSS/reset.css">
+<link rel="stylesheet" href="./assets/css/reset.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
   crossorigin="anonymous">
-<link rel="stylesheet" href="assets/CSS/styles.css">
+<link rel="stylesheet" href="./assets/css/style.css">
 
 <body>
   <div class="container">
-    <h1>Performance Vehicle Survey Questions</h1>
+    <div id="mainHeader">
+      <h1>Performance Vehicle Survey Questions</h1>
+    </div>
     <hr>
-    <div class="container questions">
+    <div class="container" id="questionsContainer">
       <div class="form-group question">
         <label for="question1">
           <h4>Question 1</h4>
@@ -27,7 +29,7 @@
         <select id="question1" class="form-control">
           <option value="0">Select an option</option>
           <option value="1">$30,000 - $34,999</option>
-          <option value="2">$35,000 - $39,999$</option>
+          <option value="2">$35,000 - $39,999</option>
           <option value="3">$40,000 - $45,000</option>
         </select>
       </div>
@@ -119,13 +121,13 @@
             <div class="modal-body" id="carInfo">
               <img id="carPhoto" style="height:300px; width:100%;" src="" alt="">
               <ul id="vehicleInfo">
-                <li id="price">1</li>
-                <li id="age">1</li>
-                <li id="make">1</li>
-                <li id="body">1</li>
-                <li id="fuel">1</li>
-                <li id="trans">1</li>
-                <li id="drive">1</li>
+                <li id="vPrice">1</li>
+                <li id="vAge">1</li>
+                <li id="vMake">1</li>
+                <li id="vBody">1</li>
+                <li id="vFuel">1</li>
+                <li id="vTrans">1</li>
+                <li id="vDrive">1</li>
               </ul>
             </div>
             <div class="modal-footer">
@@ -137,12 +139,22 @@
     </div>
   </div>
 
+  <!-- BootStrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
   <script>
+    const cars = require('../data/carArray.js')
+
     const requestCar = () => {
       event.preventDefault()
 
+      let randNum = Math.floor(Math.random() * 5)
+
       let userInput = {
-        randNum: (Math.floor(Math.random() * 5)),
         price: document.getElementById('question1').value,
         age: document.getElementById('question2').value,
         make: document.getElementById('question3').value,
@@ -159,34 +171,42 @@
       })
         .then(r => { console.log(r.status) })
         .catch(e => console.error(e))
-
+        .then(function () {
+          document.getElementById("carPhoto").src = cars[randNum].img_url
+          document.querySelector('#carName').innerHTML = cars[randNum].name
+          document.querySelector('#vPrice').innerHTML = cars[randNum].price
+          document.querySelector('#vAge').innerHTML = cars[randNum].age
+          document.querySelector('#vMake').innerHTML = cars[randNum].make
+          document.querySelector('#vBody').innerHTML = cars[randNum].body
+          document.querySelector('#vFuel').innerHTML = cars[randNum].fuel
+          document.querySelector('#vTrans').innerHTML = cars[randNum].trans
+          document.querySelector('#vDrive').innerHTML = cars[randNum].drive
+        })
       fetch('/car')
         .then(r => r.json())
         .then(r => {
           document.getElementById("carPhoto").src = r.img_url
           document.querySelector('#carName').innerHTML = r.name
-          document.querySelector('#price').innerHTML = r.price
-          document.querySelector('#age').innerHTML = r.age
-          document.querySelector('#make').innerHTML = r.make
-          document.querySelector('#body').innerHTML = r.body
-          document.querySelector('#fuel').innerHTML = r.fuel
-          document.querySelector('#trans').innerHTML = r.trans
-          document.querySelector('#drive').innerHTML = r.drive
+          document.querySelector('#vPrice').innerHTML = r.price
+          document.querySelector('#vAge').innerHTML = r.age
+          document.querySelector('#vMake').innerHTML = r.make
+          document.querySelector('#vBody').innerHTML = r.body
+          document.querySelector('#vFuel').innerHTML = r.fuel
+          document.querySelector('#vTrans').innerHTML = r.trans
+          document.querySelector('#vDrive').innerHTML = r.drive
         })
         .catch(e => console.log(e))
 
       $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
       })
+
+      for (let i = 1; i <= 7; i++) {
+        document.getElementById(`question${i}`).value = 0
+      }
     }
   </script>
-  <!-- BootStrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-    crossorigin="anonymous"></script>
+
 </body>
 
 </html>
